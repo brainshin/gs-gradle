@@ -1,13 +1,13 @@
+// Java 21 및 Gradle 8.x 규격 선언
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'com.jfrog.artifactory' version '5.2.5' // 최신 8.x 환경 호환용 플러그인 고정
+    id 'com.jfrog.artifactory' version '5.2.5' 
 }
 
 group = 'org.springframework'
 version = '0.1.0'
 
-// 사용 중이신 Java 21 환경 사양 강제 매핑
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
@@ -30,16 +30,10 @@ publishing {
     }
 }
 
-// 젠킨스 쉘 명령어로부터 계정 정보를 안전하게 수신하기 위한 사양 바인딩
+// ⚠️ 오류를 유발하던 유저/패스워드 변수 선언을 지우고, 출판물 양식 매핑만 남겨둡니다.
+// 젠킨스 플러그인이 인증 정보를 이 블록에 강제로 자동 주입하게 됩니다.
 artifactory {
-    contextUrl = "jfrog.io" // 정식 업로드 API 엔드포인트 도메인 입력
     publish {
-        repository {
-            repoKey = 'brainshin-gradle-dev-local'           // 실제 JFrog 타겟 저장소 명칭
-            username = "${artifactory_user}"                 // Jenkinsfile에서 전달받는 변수
-            password = "${artifactory_password}"             // Jenkinsfile에서 전달받는 변수
-            maven = true
-        }
         defaults {
             publications('mavenJava')
         }
