@@ -1,22 +1,11 @@
-// 1. Gradle 4.10.3 및 구형 환경에 완벽 호환되는 빌드스크립트 정의
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        // Gradle 4.x 버전과 문법적으로 가장 안정적으로 맞물리는 JFrog 플러그인 버전 고정
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.24.2"
-    }
+plugins {
+    id 'java'
+    id 'maven-publish'
 }
-
-apply plugin: 'java'
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.artifactory'
 
 group = 'org.springframework'
 version = '0.1.0'
 
-// Java 8 컴파일 규격 강제 지정
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -29,23 +18,7 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test:2.1.18.RELEASE")
 }
 
-// 2. 젠킨스 파이프라인(rtGradle) 선언부로부터 계정 정보와 타겟 저장소를 수신하기 위한 매핑 설정
-artifactory {
-    contextUrl = 'jfrog.io' // 질문자님의 실제 JFrog 주소 기입
-    publish {
-        repository {
-            // Jenkinsfile에 정의하신 deploy repo 명칭과 완벽히 일치시켜 줍니다.
-            repoKey = 'brainshin-gradle-dev-local' 
-            maven = true
-        }
-        defaults {
-            // 컴파일이 끝난 완제품 jar 파일을 추적하여 JFrog로 게시하도록 지정합니다.
-            publications('mavenJava')
-        }
-    }
-}
-
-// 3. JFrog 플러그인이 배포를 띄우기 위한 maven 출판물 양식 정의
+// 젠킨스가 가져가서 배포할 수 있도록 표준 배포 양식만 남겨둡니다.
 publishing {
     publications {
         mavenJava(MavenPublication) {
