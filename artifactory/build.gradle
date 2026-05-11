@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'com.jfrog.artifactory' version '5.2.5' 
+    id 'com.jfrog.artifactory' version '5.2.5' // 최신 8.x 환경 호환 플러그인
 }
 
 group = 'org.springframework'
@@ -12,7 +12,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-// ⚠️ [중요] 외부 인터넷망에서 스프링 라이브러리를 안전하게 땡겨오도록 강제 보장합니다.
+// ⚠️ 인터넷망 공식 레포지토리에서 스프링 3.3.5 패키지를 강제 다운로드하도록 맵핑
 repositories {
     mavenCentral()
 }
