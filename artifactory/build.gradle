@@ -1,28 +1,43 @@
+// Java 21과 최신 Gradle 8.x 사양을 만족하는 블록 구문 선언
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'com.jfrog.artifactory' version '5.2.5' // 최신 JFrog 플러그인 버전 고정
 }
 
 group = 'org.springframework'
 version = '0.1.0'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+// ⚠️ 사용 중이신 Java 21 컴파일러 버전 규격을 강제로 선언합니다.
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web:2.1.18.RELEASE")
-    testCompile("org.springframework.boot:spring-boot-starter-test:2.1.18.RELEASE")
+    // Java 21 런타임을 완벽하게 지원하는 스프링 부트 3.3.x 이상 최신 라이브러리 매핑
+    implementation("org.springframework.boot:spring-boot-starter-web:3.3.5")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:3.3.5")
 }
 
-// 젠킨스가 가져가서 배포할 수 있도록 표준 배포 양식만 남겨둡니다.
+// 빌드 완료된 jar 파일을 추적할 수 있도록 표준 출판(Publishing) 양식 지정
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+        }
+    }
+}
+
+// JFrog 플러그인 전송 설정 연결
+artifactory {
+    publish {
+        defaults {
+            publications('mavenJava')
         }
     }
 }
