@@ -1,14 +1,13 @@
-// Java 21과 최신 Gradle 8.x 사양을 만족하는 블록 구문 선언
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'com.jfrog.artifactory' version '5.2.5' // 최신 JFrog 플러그인 버전 고정
+    id 'com.jfrog.artifactory' version '5.2.5' // 최신 8.x 환경 호환용 플러그인 고정
 }
 
 group = 'org.springframework'
 version = '0.1.0'
 
-// ⚠️ 사용 중이신 Java 21 컴파일러 버전 규격을 강제로 선언합니다.
+// 사용 중이신 Java 21 환경 사양 강제 매핑
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
@@ -19,12 +18,10 @@ repositories {
 }
 
 dependencies {
-    // Java 21 런타임을 완벽하게 지원하는 스프링 부트 3.3.x 이상 최신 라이브러리 매핑
     implementation("org.springframework.boot:spring-boot-starter-web:3.3.5")
     testImplementation("org.springframework.boot:spring-boot-starter-test:3.3.5")
 }
 
-// 빌드 완료된 jar 파일을 추적할 수 있도록 표준 출판(Publishing) 양식 지정
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -33,9 +30,16 @@ publishing {
     }
 }
 
-// JFrog 플러그인 전송 설정 연결
+// 젠킨스 쉘 명령어로부터 계정 정보를 안전하게 수신하기 위한 사양 바인딩
 artifactory {
+    contextUrl = "jfrog.io" // 정식 업로드 API 엔드포인트 도메인 입력
     publish {
+        repository {
+            repoKey = 'brainshin-gradle-dev-local'           // 실제 JFrog 타겟 저장소 명칭
+            username = "${artifactory_user}"                 // Jenkinsfile에서 전달받는 변수
+            password = "${artifactory_password}"             // Jenkinsfile에서 전달받는 변수
+            maven = true
+        }
         defaults {
             publications('mavenJava')
         }
