@@ -6,7 +6,8 @@ node {
 
    stage('Build') {
        // 최신 마스터 브랜치 코드를 완전히 새로 긁어옵니다.
-       git url: 'github.com'
+       // git url: 'github.com'
+      git url: 'https://github.com/brainshin-star/gs-gradle.git'
    }
 
    stage('Artifactory configuration') {
